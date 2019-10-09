@@ -12,7 +12,7 @@ const int BRICKS_PER_LINE = 20;
 
 static const int screenWidth = 800;
 static const int screenHeight = 450;
-static const Vector2 brickSize = { screenWidth / BRICKS_PER_LINE, 40 };
+static const Vector2 brickSize = { screenWidth / BRICKS_PER_LINE, 30 };
 
 static bool gameOver = false;
 static bool pause = false;
@@ -43,14 +43,16 @@ struct Brick {
 }brick[LINES_OF_BRICKS][BRICKS_PER_LINE];;
 
 void drawing() {
+
 	BeginDrawing();
+
 	drawBricks();
 	DrawRectangleRec(player.rec, player.color);
 	DrawCircleV(ball.position, ball.radius, ball.color);
 
-	
 	EndDrawing();
 }
+
 void drawBricks() {
 	for (int i = 0; i < LINES_OF_BRICKS; i++)
 	{
@@ -64,6 +66,7 @@ void drawBricks() {
 		}
 	}
 }
+
 void initEntities() {
 	// Initialize player
 	player.rec.x = (screenWidth / 2) - 50;
@@ -74,8 +77,7 @@ void initEntities() {
 	player.color = BLUE;
 
 	// Initialize ball
-	ball.position = { player.rec.x+40, player.rec.y-30};
-	ball.speed = { -5, -5 };
+	ball.speed = { -3, -3 };
 	ball.color = YELLOW;
 	ball.radius = 7;
 	ball.active = false;
@@ -116,21 +118,43 @@ void screenSelection() {
 		break;
 	}
 }
+
 void inputs() {
+
 	if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) player.rec.x -= 6;
 	if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) player.rec.x += 6;
+	if (IsKeyPressed(KEY_SPACE))ball.active = true;
+	
 }
 
 void collisions() {
-	if ((player.rec.x - player.rec.width / 2) <= 0) { 
-		player.rec.x = player.rec.width / 2;
+	if (player.rec.x > screenWidth - player.rec.width)
+		player.rec.x = screenWidth - player.rec.width;
+	if (player.rec.x < 0)
+		player.rec.x = 0;
+
+	// Collision ball ands walls 
+	if (((ball.position.x + ball.radius) >= screenWidth) || ((ball.position.x - ball.radius) <= 0)) ball.speed.x *= -1;
+	if ((ball.position.y - ball.radius) <= 0) ball.speed.y *= -1;
+	if ((ball.position.y + ball.radius) >= screenHeight)
+	{
+		ball.speed = { 0, 0 };
+		ball.active = false;
+
+		player.life--;
 	}
-	if ((player.rec.x + player.rec.width / 2) >= screenWidth) { 
-		player.rec.x = screenWidth - player.rec.width / 2; 
+
+	// Collision ball and player
+	if (CheckCollisionCircleRec(ball.position, ball.radius, { player.rec.x - player.rec.width / 2, player.rec.y - player.rec.height / 2, player.rec.width, player.rec.height }))
+	{
+		if (ball.speed.y > 0)
+		{
+			ball.speed.y *= -1;
+			ball.speed.x = (ball.position.x - player.rec.x) / (player.rec.width / 2) * 5;
+		}
 	}
 
 	// Collision ball and bricks
-	// Los * -1 estan apagados
 	for (int i = 0; i < LINES_OF_BRICKS; i++)
 	{
 		for (int j = 0; j < BRICKS_PER_LINE; j++)
@@ -143,7 +167,7 @@ void collisions() {
 					((fabs(ball.position.x - brick[i][j].rec.x)) < (brickSize.x / 2 + ball.radius * 2 / 3)) && (ball.speed.y < 0))
 				{
 					brick[i][j].active = false;
-					//ball.speed.y *= -1;
+					ball.speed.y *= -1;
 				}
 				// Hit above
 				else if (((ball.position.y + ball.radius) >= (brick[i][j].rec.y - brickSize.y / 2)) &&
@@ -151,7 +175,7 @@ void collisions() {
 					((fabs(ball.position.x - brick[i][j].rec.x)) < (brickSize.x / 2 + ball.radius * 2 / 3)) && (ball.speed.y > 0))
 				{
 					brick[i][j].active = false;
-					//ball.speed.y *= -1;
+					ball.speed.y *= -1;
 				}
 				// Hit left
 				else if (((ball.position.x + ball.radius) >= (brick[i][j].rec.x - brickSize.x / 2)) &&
@@ -159,7 +183,7 @@ void collisions() {
 					((fabs(ball.position.y - brick[i][j].rec.y)) < (brickSize.y / 2 + ball.radius * 2 / 3)) && (ball.speed.x > 0))
 				{
 					brick[i][j].active = false;
-					//ball.speed.x *= -1;
+					ball.speed.x *= -1;
 				}
 				// Hit right
 				else if (((ball.position.x - ball.radius) <= (brick[i][j].rec.x + brickSize.x / 2)) &&
@@ -167,24 +191,30 @@ void collisions() {
 					((fabs(ball.position.y - brick[i][j].rec.y)) < (brickSize.y / 2 + ball.radius * 2 / 3)) && (ball.speed.x < 0))
 				{
 					brick[i][j].active = false;
-					//ball.speed.x *= -1;
+					ball.speed.x *= -1;
 				}
 			}
 		}
 	}
-
 }
+	
 void main() {
 	InitWindow(screenWidth, screenHeight, "Nark-anoid");
 	SetTargetFPS(60);
 	initEntities();
 	while (!WindowShouldClose())
 	{
-		ball.position.y += ball.speed.x;
-		ball.position.y += ball.speed.y;
+		inputs();
+		if (ball.active == false) {
+			ball.position = { player.rec.x + 40, player.rec.y - 30 };
+		}
+		else {
+			ball.position.x += ball.speed.x;
+			ball.position.y += ball.speed.y;
+		}
 		ClearBackground(BLACK);
 		collisions();
-		inputs();
+		
 		drawing();
 	}
 }
