@@ -5,18 +5,59 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Archivos de encabezado">
+    <Filter Include="Collisions">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="entities">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Archivos de recursos">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="gameManager">
+      <UniqueIdentifier>{2bbd40af-88a1-4104-a90d-f2a13ccd1159}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="entities\player">
+      <UniqueIdentifier>{938f6ede-ae98-4849-b1c6-474816bab4e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="entities\ball">
+      <UniqueIdentifier>{278e273e-fc00-4bf2-a404-c8339a91dfcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="entities\bricks">
+      <UniqueIdentifier>{cec4bc1b-291e-4c83-8ea9-c9e0c1654acf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="collisions.cpp">
+      <Filter>Collisions</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>entities\player</Filter>
+    </ClCompile>
+    <ClCompile Include="ball.cpp">
+      <Filter>entities\ball</Filter>
+    </ClCompile>
+    <ClCompile Include="bricks.cpp">
+      <Filter>entities\bricks</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="collisions.h">
+      <Filter>Collisions</Filter>
+    </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>entities\player</Filter>
+    </ClInclude>
+    <ClInclude Include="gameManager.h">
+      <Filter>gameManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ball.h">
+      <Filter>entities\ball</Filter>
+    </ClInclude>
+    <ClInclude Include="bricks.h">
+      <Filter>entities\bricks</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

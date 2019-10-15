@@ -2,219 +2,217 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctime>
-#include <cmath>
+#include <time.h>
 
-const int PLAYER_MAX_LIFE = 5;
+#include "collisions.h"
 
-const int LINES_OF_BRICKS = 5;
-const int BRICKS_PER_LINE = 20;
-
-static const int screenWidth = 800;
-static const int screenHeight = 450;
-static const Vector2 brickSize = { screenWidth / BRICKS_PER_LINE, 30 };
+#include "gameManager.h"
+#include "player.h"
+#include "ball.h"
+#include "bricks.h"
 
 static bool gameOver = false;
 static bool pause = false;
 
-void drawBricks();
+typedef enum GameScreen { LOGO, TITLE, GAMEPLAY, ENDING } GameScreen;
 
-enum GameScreen { MAIN_MENU, GAMEPLAY, ENDING } gameScreen;
-enum GameMode { SINGLEPLAYER, MULTIPLAYER, ARKAPONG } gameMode;
+enum gameMode {
+	singlePlayer,
+	multyPlayer
+}gamemode;
 
-struct Player {
-	Rectangle rec;
-	Color color;
-	int life;
-} player;
+static void InitGame(void);         // Initialize game
+static void UpdateGame(void);       // Update game (one frame)
+static void DrawGame(void);         // Draw game (one frame)
+static void UnloadGame(void);       // Unload game
+static void UpdateDrawFrame(void);  // Update and Draw (one frame)
 
-struct Ball {
-	Vector2 position;
-	Vector2 speed;
-	Color color;
-	int radius;
-	bool active;
-} ball;
+int main(void)
+{
+	InitWindow(screenWidth, screenHeight, "Nark-anoid");
 
-struct Brick {
-	Rectangle rec;
-	Color color;
-	bool active;
-}brick[LINES_OF_BRICKS][BRICKS_PER_LINE];;
+	SetTargetFPS(60);
 
-void drawing() {
+	// Main game loop
+	while (!WindowShouldClose()) 
+	{
+		gameOver = false;
+		UpdateDrawFrame();
+	}
 
+	UnloadGame();
+	CloseWindow();
+	return 0;
+}
+
+void UpdateDrawFrame(void)
+{
+	UpdateGame();
+	DrawGame();
+}
+
+// Update game (one frame)
+void UpdateGame(void)
+{
+	
+		if (IsKeyPressed('P')) pause = !pause;
+
+		if (!pause)
+		{
+			// Player movement logic
+			if (IsKeyDown(KEY_LEFT)|| IsKeyDown(KEY_A)) player.rec.x -= 6;
+			if ((player.rec.x - player.rec.width / 2) <= 0) player.rec.x = player.rec.width / 2;
+			if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) player.rec.x += 6;
+			if ((player.rec.x + player.rec.width / 2) >= screenWidth) player.rec.x = screenWidth - player.rec.width / 2;
+
+			// Ball launching logic
+			if (!ball.active)
+			{
+				if (IsKeyPressed(KEY_SPACE))
+				{
+					ball.active = true;
+					ball.speed = { 0, -5 };
+				}
+			}
+
+			// Ball movement
+			if (ball.active)
+			{
+				ball.position.x += ball.speed.x;
+				ball.position.y += ball.speed.y;
+			}
+			else
+			{
+				ball.position = { player.rec.x, screenHeight * 7 / 8 - 30 };
+			}
+
+			collisions();
+			//// Collision ball ands walls 
+			//if (((ball.position.x + ball.radius) >= screenWidth) || ((ball.position.x - ball.radius) <= 0)) ball.speed.x *= -1;
+			//if ((ball.position.y - ball.radius) <= 0) ball.speed.y *= -1;
+			//if ((ball.position.y + ball.radius) >= screenHeight)
+			//{
+			//	ball.speed = { 0, 0 };
+			//	ball.active = false;
+
+			//	player.life--;
+			//}
+
+			//// Collision ball and player
+			//if (CheckCollisionCircleRec(ball.position, ball.radius,{ player.rec.x - player.rec.width / 2, player.rec.y - player.rec.height/ 2, player.rec.width, player.rec.height}))
+			//{
+			//	if (ball.speed.y > 0)
+			//	{
+			//		ball.speed.y *= -1;
+			//		ball.speed.x = (ball.position.x - player.rec.x) / (player.rec.width / 2) * 5;
+			//	}
+			//}
+
+			//// Collision ball and bricks
+			//for (int i = 0; i < LINES_OF_BRICKS; i++)
+			//{
+			//	for (int j = 0; j < BRICKS_PER_LINE; j++)
+			//	{
+			//		if (brick[i][j].active)
+			//		{
+			//			// Hit below
+			//			if (((ball.position.y - ball.radius) <= (brick[i][j].position.y + brickSize.y / 2)) &&
+			//				((ball.position.y - ball.radius) > (brick[i][j].position.y + brickSize.y / 2 + ball.speed.y)) &&
+			//				((fabs(ball.position.x - brick[i][j].position.x)) < (brickSize.x / 2 + ball.radius * 2 / 3)) && (ball.speed.y < 0))
+			//			{
+			//				brick[i][j].active = false;
+			//				ball.speed.y *= -1;
+			//			}
+			//			// Hit above
+			//			else if (((ball.position.y + ball.radius) >= (brick[i][j].position.y - brickSize.y / 2)) &&
+			//				((ball.position.y + ball.radius) < (brick[i][j].position.y - brickSize.y / 2 + ball.speed.y)) &&
+			//				((fabs(ball.position.x - brick[i][j].position.x)) < (brickSize.x / 2 + ball.radius * 2 / 3)) && (ball.speed.y > 0))
+			//			{
+			//				brick[i][j].active = false;
+			//				ball.speed.y *= -1;
+			//			}
+			//			// Hit left
+			//			else if (((ball.position.x + ball.radius) >= (brick[i][j].position.x - brickSize.x / 2)) &&
+			//				((ball.position.x + ball.radius) < (brick[i][j].position.x - brickSize.x / 2 + ball.speed.x)) &&
+			//				((fabs(ball.position.y - brick[i][j].position.y)) < (brickSize.y / 2 + ball.radius * 2 / 3)) && (ball.speed.x > 0))
+			//			{
+			//				brick[i][j].active = false;
+			//				ball.speed.x *= -1;
+			//			}
+			//			// Hit right
+			//			else if (((ball.position.x - ball.radius) <= (brick[i][j].position.x + brickSize.x / 2)) &&
+			//				((ball.position.x - ball.radius) > (brick[i][j].position.x + brickSize.x / 2 + ball.speed.x)) &&
+			//				((fabs(ball.position.y - brick[i][j].position.y)) < (brickSize.y / 2 + ball.radius * 2 / 3)) && (ball.speed.x < 0))
+			//			{
+			//				brick[i][j].active = false;
+			//				ball.speed.x *= -1;
+			//			}
+			//		}
+			//	}
+			//}
+
+			// Game over logic
+			if (player.life <= 0) gameOver = true;
+			else
+			{
+				gameOver = false;
+
+				for (int i = 0; i < LINES_OF_BRICKS; i++)
+				{
+					for (int j = 0; j < BRICKS_PER_LINE; j++)
+					{
+						if (brick[i][j].active) gameOver = false;
+					}
+				}
+			}
+		}
+	}
+
+
+// Draw game (one frame)
+void DrawGame(void)
+{
 	BeginDrawing();
 
-	drawBricks();
-	DrawRectangleRec(player.rec, player.color);
-	DrawCircleV(ball.position, ball.radius, ball.color);
+	ClearBackground(BLACK);
+
+		// Draw player bar
+		DrawRectangle(player.rec.x - player.rec.width / 2, player.rec.y - player.rec.height / 2, player.rec.width, player.rec.height, BLUE);
+
+		// Draw player lives
+		for (int i = 0; i < player.life; i++) DrawRectangle(20 + 40 * i, screenHeight - 30, 30, 10, YELLOW);
+
+		// Draw ball
+		DrawCircleV(ball.position, ball.radius, MAROON);
+
+		// Draw bricks
+		for (int i = 0; i < LINES_OF_BRICKS; i++)
+		{
+			for (int j = 0; j < BRICKS_PER_LINE; j++)
+			{
+				if (brick[i][j].active)
+				{
+					if ((i + j) % 2 == 0) DrawRectangle(brick[i][j].position.x - brickSize.x / 2, brick[i][j].position.y - brickSize.y / 2, brickSize.x, brickSize.y, GRAY);
+					else DrawRectangle(brick[i][j].position.x - brickSize.x / 2, brick[i][j].position.y - brickSize.y / 2, brickSize.x, brickSize.y, DARKGRAY);
+				}
+			}
+		}
+
+		//if (pause) DrawText("GAME PAUSED", screenWidth / 2 - MeasureText("GAME PAUSED", 40) / 2, screenHeight / 2 - 40, 40, GRAY);
+		
+		//DrawText("Press Enter to play again", GetScreenWidth() / 2 - MeasureText("Press Enter to play again", 20) / 2, GetScreenHeight() / 2 - 50, 20, GRAY);
 
 	EndDrawing();
 }
 
-void drawBricks() {
-	for (int i = 0; i < LINES_OF_BRICKS; i++)
-	{
-		for (int j = 0; j < BRICKS_PER_LINE; j++)
-		{
-			if (brick[i][j].active)
-			{
-				DrawRectangleRec(brick[i][j].rec, brick[i][j].color);
-				//DrawRectangleRec(players[i].rec, players[i].playerColor);
-			}
-		}
-	}
+void UnloadGame(void)
+{
+
 }
 
-void initEntities() {
-	// Initialize player
-	player.rec.x = (screenWidth / 2) - 50;
-	player.rec.y = screenHeight * 7 / 8;
-	player.rec.width = 80;
-	player.rec.height = 10;
-	player.life = PLAYER_MAX_LIFE;
-	player.color = BLUE;
-
-	// Initialize ball
-	ball.speed = { -3, -3 };
-	ball.color = YELLOW;
-	ball.radius = 7;
-	ball.active = false;
-
-	// Initialize bricks
-	int initialYPosition = 50;
-	for (int i = 0; i < LINES_OF_BRICKS; i++)
-	{
-		for (int j = 0; j < BRICKS_PER_LINE; j++)
-		{
-			if ((i + j) % 2 == 0) {
-				brick[i][j].rec.x = j * brickSize.x;
-				brick[i][j].rec.y = i * brickSize.y + initialYPosition;
-				brick[i][j].color = WHITE;
-			}
-			else {
-				brick[i][j].rec.x = j * brickSize.x;
-				brick[i][j].rec.y = i * brickSize.y + initialYPosition;
-				brick[i][j].color = RED;
-			}
-			brick[i][j].rec.width = brickSize.x;
-			brick[i][j].rec.height = brickSize.y;
-			brick[i][j].active = true;
-		}
-	}
+// Initialize game variables
+void InitGame(void)
+{
+	Vector2 help = { 200, 40 };
 }
 
-void screenSelection() {
-	switch (gameScreen)
-	{
-	case MAIN_MENU:
-		break;
-	case GAMEPLAY:
-		break;
-	case ENDING:
-		break;
-	default:
-		break;
-	}
-}
-
-void inputs() {
-
-	if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) player.rec.x -= 6;
-	if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) player.rec.x += 6;
-	if (IsKeyPressed(KEY_SPACE))ball.active = true;
-	
-}
-
-void collisions() {
-	if (player.rec.x > screenWidth - player.rec.width)
-		player.rec.x = screenWidth - player.rec.width;
-	if (player.rec.x < 0)
-		player.rec.x = 0;
-
-	// Collision ball ands walls 
-	if (((ball.position.x + ball.radius) >= screenWidth) || ((ball.position.x - ball.radius) <= 0)) ball.speed.x *= -1;
-	if ((ball.position.y - ball.radius) <= 0) ball.speed.y *= -1;
-	if ((ball.position.y + ball.radius) >= screenHeight)
-	{
-		ball.speed = { 0, 0 };
-		ball.active = false;
-
-		player.life--;
-	}
-
-	// Collision ball and player
-	if (CheckCollisionCircleRec(ball.position, ball.radius, { player.rec.x - player.rec.width / 2, player.rec.y - player.rec.height / 2, player.rec.width, player.rec.height }))
-	{
-		if (ball.speed.y > 0)
-		{
-			ball.speed.y *= -1;
-			ball.speed.x = (ball.position.x - player.rec.x) / (player.rec.width / 2) * 5;
-		}
-	}
-
-	// Collision ball and bricks
-	for (int i = 0; i < LINES_OF_BRICKS; i++)
-	{
-		for (int j = 0; j < BRICKS_PER_LINE; j++)
-		{
-			if (brick[i][j].active)
-			{
-				// Hit below
-				if (((ball.position.y - ball.radius) <= (brick[i][j].rec.y + brickSize.y / 2)) &&
-					((ball.position.y - ball.radius) > (brick[i][j].rec.y + brickSize.y / 2 + ball.speed.y)) &&
-					((fabs(ball.position.x - brick[i][j].rec.x)) < (brickSize.x / 2 + ball.radius * 2 / 3)) && (ball.speed.y < 0))
-				{
-					brick[i][j].active = false;
-					ball.speed.y *= -1;
-				}
-				// Hit above
-				else if (((ball.position.y + ball.radius) >= (brick[i][j].rec.y - brickSize.y / 2)) &&
-					((ball.position.y + ball.radius) < (brick[i][j].rec.y - brickSize.y / 2 + ball.speed.y)) &&
-					((fabs(ball.position.x - brick[i][j].rec.x)) < (brickSize.x / 2 + ball.radius * 2 / 3)) && (ball.speed.y > 0))
-				{
-					brick[i][j].active = false;
-					ball.speed.y *= -1;
-				}
-				// Hit left
-				else if (((ball.position.x + ball.radius) >= (brick[i][j].rec.x - brickSize.x / 2)) &&
-					((ball.position.x + ball.radius) < (brick[i][j].rec.x - brickSize.x / 2 + ball.speed.x)) &&
-					((fabs(ball.position.y - brick[i][j].rec.y)) < (brickSize.y / 2 + ball.radius * 2 / 3)) && (ball.speed.x > 0))
-				{
-					brick[i][j].active = false;
-					ball.speed.x *= -1;
-				}
-				// Hit right
-				else if (((ball.position.x - ball.radius) <= (brick[i][j].rec.x + brickSize.x / 2)) &&
-					((ball.position.x - ball.radius) > (brick[i][j].rec.x + brickSize.x / 2 + ball.speed.x)) &&
-					((fabs(ball.position.y - brick[i][j].rec.y)) < (brickSize.y / 2 + ball.radius * 2 / 3)) && (ball.speed.x < 0))
-				{
-					brick[i][j].active = false;
-					ball.speed.x *= -1;
-				}
-			}
-		}
-	}
-}
-	
-void main() {
-	InitWindow(screenWidth, screenHeight, "Nark-anoid");
-	SetTargetFPS(60);
-	initEntities();
-	while (!WindowShouldClose())
-	{
-		inputs();
-		if (ball.active == false) {
-			ball.position = { player.rec.x + 40, player.rec.y - 30 };
-		}
-		else {
-			ball.position.x += ball.speed.x;
-			ball.position.y += ball.speed.y;
-		}
-		ClearBackground(BLACK);
-		collisions();
-		
-		drawing();
-	}
-}
