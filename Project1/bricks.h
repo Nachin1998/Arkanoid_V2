@@ -10,6 +10,7 @@ static Vector2 brickSize = { 0 };
 struct Brick {
 	Rectangle rec;
 	Vector2 position;
+	Color color;
 	bool active;
 };
 

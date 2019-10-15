@@ -1,8 +1,9 @@
 #include "ball.h"
+#include "player.h"
 #include "gameManager.h"
 Ball ball;
 void setBallParameters() {
-	ball.position = { screenWidth / 2, screenHeight * 7 / 8 - 30 };
+	ball.position = {player.rec.x + player.rec.width/2, player.rec.y-20 };
 	ball.speed = { 0, 0 };
 	ball.radius = 7;
 	ball.active = false;

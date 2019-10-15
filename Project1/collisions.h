@@ -2,7 +2,7 @@
 #define COLLISIONS_H
 
 
-	void collisions();
+void collisions();
 
 
 #endif

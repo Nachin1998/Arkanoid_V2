@@ -11,28 +11,32 @@
 #include "ball.h"
 #include "bricks.h"
 
+#include "mainMenu.h"
+
 static bool gameOver = false;
 static bool pause = false;
+bool enter = false;
 
 typedef enum GameScreen { LOGO, TITLE, GAMEPLAY, ENDING } GameScreen;
 
 enum gameMode {
 	singlePlayer,
-	multyPlayer
+	multiPlayer
 }gamemode;
 
-static void InitGame(void);         // Initialize game
-static void UpdateGame(void);       // Update game (one frame)
-static void DrawGame(void);         // Draw game (one frame)
-static void UnloadGame(void);       // Unload game
-static void UpdateDrawFrame(void);  // Update and Draw (one frame)
+static void InitGame();         // Initialize game
+static void UpdateGame();       // Update game (one frame)
+static void setAllParameters();
+static void DrawGame();         // Draw game (one frame)
+static void UnloadGame();       // Unload game
+static void UpdateDrawFrame();  // Update and Draw (one frame)
 
 int main(void)
 {
 	InitWindow(screenWidth, screenHeight, "Nark-anoid");
-
+	mainMenu();
 	SetTargetFPS(60);
-
+	setAllParameters();
 	// Main game loop
 	while (!WindowShouldClose()) 
 	{
@@ -61,9 +65,9 @@ void UpdateGame(void)
 		{
 			// Player movement logic
 			if (IsKeyDown(KEY_LEFT)|| IsKeyDown(KEY_A)) player.rec.x -= 6;
-			if ((player.rec.x - player.rec.width / 2) <= 0) player.rec.x = player.rec.width / 2;
+			if ((player.rec.x) <= 0) player.rec.x = 0.1f;
 			if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) player.rec.x += 6;
-			if ((player.rec.x + player.rec.width / 2) >= screenWidth) player.rec.x = screenWidth - player.rec.width / 2;
+			if ((player.rec.x + player.rec.width) >= screenWidth) player.rec.x = screenWidth - player.rec.width;
 
 			// Ball launching logic
 			if (!ball.active)
@@ -82,74 +86,9 @@ void UpdateGame(void)
 				ball.position.y += ball.speed.y;
 			}
 			else
-			{
-				ball.position = { player.rec.x, screenHeight * 7 / 8 - 30 };
-			}
+				ball.position = { player.rec.x + player.rec.width/2, player.rec.y - 20 };
 
 			collisions();
-			//// Collision ball ands walls 
-			//if (((ball.position.x + ball.radius) >= screenWidth) || ((ball.position.x - ball.radius) <= 0)) ball.speed.x *= -1;
-			//if ((ball.position.y - ball.radius) <= 0) ball.speed.y *= -1;
-			//if ((ball.position.y + ball.radius) >= screenHeight)
-			//{
-			//	ball.speed = { 0, 0 };
-			//	ball.active = false;
-
-			//	player.life--;
-			//}
-
-			//// Collision ball and player
-			//if (CheckCollisionCircleRec(ball.position, ball.radius,{ player.rec.x - player.rec.width / 2, player.rec.y - player.rec.height/ 2, player.rec.width, player.rec.height}))
-			//{
-			//	if (ball.speed.y > 0)
-			//	{
-			//		ball.speed.y *= -1;
-			//		ball.speed.x = (ball.position.x - player.rec.x) / (player.rec.width / 2) * 5;
-			//	}
-			//}
-
-			//// Collision ball and bricks
-			//for (int i = 0; i < LINES_OF_BRICKS; i++)
-			//{
-			//	for (int j = 0; j < BRICKS_PER_LINE; j++)
-			//	{
-			//		if (brick[i][j].active)
-			//		{
-			//			// Hit below
-			//			if (((ball.position.y - ball.radius) <= (brick[i][j].position.y + brickSize.y / 2)) &&
-			//				((ball.position.y - ball.radius) > (brick[i][j].position.y + brickSize.y / 2 + ball.speed.y)) &&
-			//				((fabs(ball.position.x - brick[i][j].position.x)) < (brickSize.x / 2 + ball.radius * 2 / 3)) && (ball.speed.y < 0))
-			//			{
-			//				brick[i][j].active = false;
-			//				ball.speed.y *= -1;
-			//			}
-			//			// Hit above
-			//			else if (((ball.position.y + ball.radius) >= (brick[i][j].position.y - brickSize.y / 2)) &&
-			//				((ball.position.y + ball.radius) < (brick[i][j].position.y - brickSize.y / 2 + ball.speed.y)) &&
-			//				((fabs(ball.position.x - brick[i][j].position.x)) < (brickSize.x / 2 + ball.radius * 2 / 3)) && (ball.speed.y > 0))
-			//			{
-			//				brick[i][j].active = false;
-			//				ball.speed.y *= -1;
-			//			}
-			//			// Hit left
-			//			else if (((ball.position.x + ball.radius) >= (brick[i][j].position.x - brickSize.x / 2)) &&
-			//				((ball.position.x + ball.radius) < (brick[i][j].position.x - brickSize.x / 2 + ball.speed.x)) &&
-			//				((fabs(ball.position.y - brick[i][j].position.y)) < (brickSize.y / 2 + ball.radius * 2 / 3)) && (ball.speed.x > 0))
-			//			{
-			//				brick[i][j].active = false;
-			//				ball.speed.x *= -1;
-			//			}
-			//			// Hit right
-			//			else if (((ball.position.x - ball.radius) <= (brick[i][j].position.x + brickSize.x / 2)) &&
-			//				((ball.position.x - ball.radius) > (brick[i][j].position.x + brickSize.x / 2 + ball.speed.x)) &&
-			//				((fabs(ball.position.y - brick[i][j].position.y)) < (brickSize.y / 2 + ball.radius * 2 / 3)) && (ball.speed.x < 0))
-			//			{
-			//				brick[i][j].active = false;
-			//				ball.speed.x *= -1;
-			//			}
-			//		}
-			//	}
-			//}
 
 			// Game over logic
 			if (player.life <= 0) gameOver = true;
@@ -168,6 +107,11 @@ void UpdateGame(void)
 		}
 	}
 
+void setAllParameters() {
+	setPlayerParameters();
+	setBallParameters();
+	setBrickParameters();
+}
 
 // Draw game (one frame)
 void DrawGame(void)
@@ -176,11 +120,16 @@ void DrawGame(void)
 
 	ClearBackground(BLACK);
 
-		// Draw player bar
-		DrawRectangle(player.rec.x - player.rec.width / 2, player.rec.y - player.rec.height / 2, player.rec.width, player.rec.height, BLUE);
+	// Draw player bar
+	if (IsKeyPressed(KEY_ENTER))enter = true;
+
+	if (enter) {
+		DrawRectangleRec(player.rec, BLUE);
+	}else
+		DrawRectangleLinesEx(player.rec, 2, WHITE);
 
 		// Draw player lives
-		for (int i = 0; i < player.life; i++) DrawRectangle(20 + 40 * i, screenHeight - 30, 30, 10, YELLOW);
+		for (int i = 0; i < player.life; i++) DrawRectangle(20 + 178 * i, screenHeight - 30, 30, 10, YELLOW);
 
 		// Draw ball
 		DrawCircleV(ball.position, ball.radius, MAROON);
@@ -198,9 +147,11 @@ void DrawGame(void)
 			}
 		}
 
-		//if (pause) DrawText("GAME PAUSED", screenWidth / 2 - MeasureText("GAME PAUSED", 40) / 2, screenHeight / 2 - 40, 40, GRAY);
 		
-		//DrawText("Press Enter to play again", GetScreenWidth() / 2 - MeasureText("Press Enter to play again", 20) / 2, GetScreenHeight() / 2 - 50, 20, GRAY);
+
+		if (pause) DrawText("GAME PAUSED", screenWidth / 2 - MeasureText("GAME PAUSED", 40) / 2, screenHeight / 2 - 40, 40, GRAY);
+		
+		if(gameOver) DrawText("Press Enter to play again", GetScreenWidth() / 2 - MeasureText("Press Enter to play again", 20) / 2, GetScreenHeight() / 2 - 50, 20, GRAY);
 
 	EndDrawing();
 }

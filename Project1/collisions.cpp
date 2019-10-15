@@ -17,12 +17,12 @@ void collisions() {
 	}
 
 	// Collision ball and player
-	if (CheckCollisionCircleRec(ball.position, ball.radius, { player.rec.x - player.rec.width / 2, player.rec.y - player.rec.height / 2, player.rec.width, player.rec.height }))
+	if (CheckCollisionCircleRec(ball.position, ball.radius, player.rec))
 	{
 		if (ball.speed.y > 0)
 		{
 			ball.speed.y *= -1;
-			ball.speed.x = (ball.position.x - player.rec.x) / (player.rec.width / 2) * 5;
+			ball.speed.x = (ball.position.x - player.rec.x) / (player.rec.width) * 5;
 		}
 	}
 
