@@ -71,13 +71,16 @@ void mainMenu() {
 					controlsActive = true;
 					controls();
 					break;
+
 				case 2:
 					creditsActive = true;
 					credits();
 					break;
+
 				case 3:
 					exit(0);
 					break;
+
 				case 4:
 					if (controlsActive) {
 						controlsActive = false;
@@ -101,8 +104,6 @@ void controls() {
 		DrawText("Space to shoot ball", 432, 230, 19, LIGHTGRAY);
 
 		DrawText("Close", buttons[4].rec.x, buttons[4].rec.y, buttons[4].rec.height, buttons[4].color);
-		
-		//DrawText("Close", 492, 290, 19, LIGHTGRAY);
 	}
 }
 
