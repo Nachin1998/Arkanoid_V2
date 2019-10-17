@@ -4,18 +4,18 @@
 
 const int cant = 5;
 
-struct Button {
+struct MenuButton {
 	Rectangle rec;
 	Color color;
 };
 
-extern Button buttons[cant];
+extern MenuButton menuButtons[cant];
 extern bool controlsActive;
 extern bool creditsActive;
 
 void setButtons();
 void mainMenu();
 void controls();
-void credits();
+void menuCredits();
 
 #endif

@@ -135,6 +135,7 @@
     <ClCompile Include="ball.cpp" />
     <ClCompile Include="bricks.cpp" />
     <ClCompile Include="collisions.cpp" />
+    <ClCompile Include="credits.cpp" />
     <ClCompile Include="mainMenu.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="Source.cpp" />
@@ -143,6 +144,7 @@
     <ClInclude Include="ball.h" />
     <ClInclude Include="bricks.h" />
     <ClInclude Include="collisions.h" />
+    <ClInclude Include="credits.h" />
     <ClInclude Include="gameManager.h" />
     <ClInclude Include="mainMenu.h" />
     <ClInclude Include="player.h" />

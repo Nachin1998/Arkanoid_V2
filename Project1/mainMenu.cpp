@@ -1,37 +1,36 @@
 #include "mainMenu.h"
-#include "gameManager.h"
 #include <iostream>
 
-Button buttons[cant];
+MenuButton menuButtons[cant];
 
 bool controlsActive = false;
-bool creditsActive = false;
+bool menuCreditsActive = false;
 
 void setButtons() {
 
 	for (int i = 0; i < cant; i++)
 	{
-		buttons[i].rec.x = 20;
-		buttons[i].rec.height = 24;
-		buttons[i].color = LIGHTGRAY;
+		menuButtons[i].rec.x = 20;
+		menuButtons[i].rec.height = 24;
+		menuButtons[i].color = LIGHTGRAY;
 	}
 
-	buttons[0].rec.y = 165;  //Play button
-	buttons[0].rec.width = 50;
+	menuButtons[0].rec.y = 165;  //Play button
+	menuButtons[0].rec.width = 50;
 
-	buttons[1].rec.y = 210;  //Controls button
-	buttons[1].rec.width = 105;
+	menuButtons[1].rec.y = 210;  //Controls button
+	menuButtons[1].rec.width = 105;
 
-	buttons[2].rec.y = 255;  //Credits button
-	buttons[2].rec.width = 90;
+	menuButtons[2].rec.y = 255;  //Credits button
+	menuButtons[2].rec.width = 90;
 
-	buttons[3].rec.y = 300;  //Exit button
-	buttons[3].rec.width = 115;
+	menuButtons[3].rec.y = 300;  //Exit button
+	menuButtons[3].rec.width = 115;
 
-	buttons[4].rec.x = 492;  //Close button
-	buttons[4].rec.y = 290;
-	buttons[4].rec.width = 115;
-	buttons[4].rec.height = 19;
+	menuButtons[4].rec.x = 492;  //Close button
+	menuButtons[4].rec.y = 290;
+	menuButtons[4].rec.width = 50;
+	menuButtons[4].rec.height = 19;
 
 }
 
@@ -42,51 +41,61 @@ void mainMenu() {
 	
 	while (!WindowShouldClose())
 	{
-		BeginDrawing();
+		//BeginDrawing();
 
 		ClearBackground(BLACK);
 
 		controls();
+		menuCredits();
 
-		DrawText("Nark-anoid", buttons[0].rec.x, 25, 50, WHITE);
-		DrawText("Play", buttons[0].rec.x, buttons[0].rec.y, buttons[0].rec.height, buttons[0].color);
-		DrawText("Controls", buttons[1].rec.x, buttons[1].rec.y, buttons[1].rec.height, buttons[1].color);
-		DrawText("Credits", buttons[2].rec.x, buttons[2].rec.y, buttons[2].rec.height, buttons[2].color);
-		DrawText("Exit game", buttons[3].rec.x, buttons[3].rec.y, buttons[3].rec.height, buttons[3].color);
+		DrawText("Nark-anoid", menuButtons[0].rec.x, 20, 70, WHITE);
+
+		DrawText("Play", menuButtons[0].rec.x, menuButtons[0].rec.y, menuButtons[0].rec.height, menuButtons[0].color);
+		DrawText("Controls", menuButtons[1].rec.x, menuButtons[1].rec.y, menuButtons[1].rec.height, menuButtons[1].color);
+		DrawText("Credits", menuButtons[2].rec.x, menuButtons[2].rec.y, menuButtons[2].rec.height, menuButtons[2].color);
+		DrawText("Exit game", menuButtons[3].rec.x, menuButtons[3].rec.y, menuButtons[3].rec.height, menuButtons[3].color);
 
 		//Color change
 		for (int i = 0; i < cant; i++)
 		{
-			if (!CheckCollisionPointRec(GetMousePosition(), buttons[i].rec))
-				buttons[i].color = LIGHTGRAY;
+			if (!CheckCollisionPointRec(GetMousePosition(), menuButtons[i].rec))
+				menuButtons[i].color = LIGHTGRAY;
 			else
-				buttons[i].color = BLUE;
+				menuButtons[i].color = BLUE;
 
-			if (CheckCollisionPointRec(GetMousePosition(), buttons[i].rec) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-				buttons[i].color = DARKBLUE;
+			if (CheckCollisionPointRec(GetMousePosition(), menuButtons[i].rec) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+				menuButtons[i].color = DARKBLUE;
 
 				switch (i)
 				{
-				case 1:
-					controlsActive = true;
-					controls();
+				case 1:  //Controls button
+					if (menuCreditsActive) {
+						menuCreditsActive = false;
+						controlsActive = true;
+					}
+					else
+						controlsActive = true;
 					break;
 
-				case 2:
-					creditsActive = true;
-					credits();
+				case 2:  //Credits button
+					if (controlsActive) {
+						controlsActive = false;
+						menuCreditsActive = true;
+					}
+					else
+						menuCreditsActive = true;
 					break;
 
-				case 3:
+				case 3:  //Exit button
 					exit(0);
 					break;
 
-				case 4:
+				case 4:  //Close button
 					if (controlsActive) {
 						controlsActive = false;
 					}
-					if (creditsActive) {
-						creditsActive = false;
+					if (menuCreditsActive) {
+						menuCreditsActive = false;
 					}
 					break;
 				}
@@ -103,19 +112,19 @@ void controls() {
 		DrawText("A,D, Left/Right arrow", 420, 200, 19, LIGHTGRAY);
 		DrawText("Space to shoot ball", 432, 230, 19, LIGHTGRAY);
 
-		DrawText("Close", buttons[4].rec.x, buttons[4].rec.y, buttons[4].rec.height, buttons[4].color);
+		DrawText("Close", menuButtons[4].rec.x, menuButtons[4].rec.y, menuButtons[4].rec.height, menuButtons[4].color);
 	}
 }
 
-void credits() {
+void menuCredits() {
 
-	if (creditsActive) {
-		DrawText("Credits", 450, 150, 31, LIGHTGRAY);
-		DrawText("A,D, Left/Right arrow", 420, 200, 19, LIGHTGRAY);
-		DrawText("Space to shoot ball", 432, 230, 19, LIGHTGRAY);
+	if (menuCreditsActive) {
+		DrawText("Credits", 460, 100, 31, LIGHTGRAY);
+		DrawText("Lead Programmer", 350, 150, 19, LIGHTGRAY);
+		DrawText("Ignacio Fernandez Lemos", 540, 150, 19, LIGHTGRAY);
+		DrawText("Library", 435, 230, 19, LIGHTGRAY);
+		DrawText("RayLib", 540, 230, 19, LIGHTGRAY);
 
-		DrawText("Close", buttons[4].rec.x, buttons[4].rec.y, buttons[4].rec.height, buttons[4].color);
-
-		//DrawText("Close", 492, 290, 19, LIGHTGRAY);
+		DrawText("Close", menuButtons[4].rec.x, menuButtons[4].rec.y, menuButtons[4].rec.height, menuButtons[4].color);
 	}
 }

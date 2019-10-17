@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Collisions">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="entities">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
@@ -28,13 +24,23 @@
     <Filter Include="scenes">
       <UniqueIdentifier>{7d4475f7-f806-4bd1-ad20-1251e650a0ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="scenes\mainMenu">
+      <UniqueIdentifier>{fa067420-6c67-437a-a5f3-1097bd412493}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="collisions">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="scenes\credits">
+      <UniqueIdentifier>{2c2e3c70-1ab1-45d3-ba2f-e2783d0c23b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
       <Filter>main</Filter>
     </ClCompile>
     <ClCompile Include="collisions.cpp">
-      <Filter>Collisions</Filter>
+      <Filter>collisions</Filter>
     </ClCompile>
     <ClCompile Include="player.cpp">
       <Filter>entities\player</Filter>
@@ -46,12 +52,15 @@
       <Filter>entities\bricks</Filter>
     </ClCompile>
     <ClCompile Include="mainMenu.cpp">
-      <Filter>scenes</Filter>
+      <Filter>scenes\mainMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="credits.cpp">
+      <Filter>scenes\credits</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="collisions.h">
-      <Filter>Collisions</Filter>
+      <Filter>collisions</Filter>
     </ClInclude>
     <ClInclude Include="player.h">
       <Filter>entities\player</Filter>
@@ -66,7 +75,10 @@
       <Filter>entities\bricks</Filter>
     </ClInclude>
     <ClInclude Include="mainMenu.h">
-      <Filter>scenes</Filter>
+      <Filter>scenes\mainMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="credits.h">
+      <Filter>scenes\credits</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

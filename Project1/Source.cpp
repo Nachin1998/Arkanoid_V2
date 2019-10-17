@@ -12,6 +12,7 @@
 #include "bricks.h"
 
 #include "mainMenu.h"
+#include "credits.h"
 
 static bool gameOver = false;
 static bool pause = false;
@@ -34,16 +35,18 @@ static void UpdateDrawFrame();  // Update and Draw (one frame)
 int main(void)
 {
 	InitWindow(screenWidth, screenHeight, "Nark-anoid");
-	mainMenu();
+	
 	SetTargetFPS(60);
 	setAllParameters();
-	// Main game loop
+
 	while (!WindowShouldClose()) 
 	{
-		gameOver = false;
-		UpdateDrawFrame();
+		BeginDrawing();
+		endingCredits();
+		mainMenu();
+		DrawGame();
 	}
-
+	
 	UnloadGame();
 	CloseWindow();
 	return 0;
@@ -51,8 +54,7 @@ int main(void)
 
 void UpdateDrawFrame(void)
 {
-	UpdateGame();
-	DrawGame();
+
 }
 
 // Update game (one frame)
