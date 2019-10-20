@@ -1,10 +1,14 @@
 #include "collisions.h"
-#include "gameManager.h"
+
 #include "player.h"
 #include "ball.h"
 #include "bricks.h"
 #include "raylib.h"
+#include "Header.h"
 #include <math.h>
+
+
+using namespace game;
 void collisions() {
 	// Collision ball ands walls 
 	if (((ball.position.x + ball.radius) >= screenWidth) || ((ball.position.x - ball.radius) <= 0)) ball.speed.x *= -1;

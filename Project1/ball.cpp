@@ -1,6 +1,6 @@
 #include "ball.h"
 #include "player.h"
-#include "gameManager.h"
+
 Ball ball;
 void setBallParameters() {
 	ball.position = {player.rec.x + player.rec.width/2, player.rec.y-20 };

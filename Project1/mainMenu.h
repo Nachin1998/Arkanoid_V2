@@ -14,8 +14,9 @@ extern bool controlsActive;
 extern bool creditsActive;
 
 void setButtons();
-void mainMenu();
-void controls();
-void menuCredits();
+void drawMainMenu();
+void buttonSelection();
+void drawControls();
+void drawMenuCredits();
 
 #endif

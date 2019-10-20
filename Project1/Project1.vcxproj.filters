@@ -5,9 +5,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="gameManager">
-      <UniqueIdentifier>{2bbd40af-88a1-4104-a90d-f2a13ccd1159}</UniqueIdentifier>
-    </Filter>
     <Filter Include="entities\player">
       <UniqueIdentifier>{938f6ede-ae98-4849-b1c6-474816bab4e9}</UniqueIdentifier>
     </Filter>
@@ -57,6 +54,7 @@
     <ClCompile Include="credits.cpp">
       <Filter>scenes\credits</Filter>
     </ClCompile>
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="collisions.h">
@@ -64,9 +62,6 @@
     </ClInclude>
     <ClInclude Include="player.h">
       <Filter>entities\player</Filter>
-    </ClInclude>
-    <ClInclude Include="gameManager.h">
-      <Filter>gameManager</Filter>
     </ClInclude>
     <ClInclude Include="ball.h">
       <Filter>entities\ball</Filter>
@@ -79,6 +74,9 @@
     </ClInclude>
     <ClInclude Include="credits.h">
       <Filter>scenes\credits</Filter>
+    </ClInclude>
+    <ClInclude Include="Header.h">
+      <Filter>main</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

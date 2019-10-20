@@ -1,6 +1,6 @@
 #include "player.h"
-#include "gameManager.h"
-
+#include "Header.h"
+using namespace game;
 Player player;
 
 void setPlayerParameters() {

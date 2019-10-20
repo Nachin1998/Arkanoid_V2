@@ -1,6 +1,8 @@
 #include "mainMenu.h"
 #include <iostream>
+#include "Header.h"
 
+using namespace game;
 MenuButton menuButtons[cant];
 
 bool controlsActive = false;
@@ -31,22 +33,74 @@ void setButtons() {
 	menuButtons[4].rec.y = 290;
 	menuButtons[4].rec.width = 50;
 	menuButtons[4].rec.height = 19;
-
 }
 
-void mainMenu() {
+void buttonSelection() {
+	for (int i = 0; i < cant; i++)
+	{
+		if (!CheckCollisionPointRec(GetMousePosition(), menuButtons[i].rec))
+			menuButtons[i].color = LIGHTGRAY;
+		else
+			menuButtons[i].color = BLUE;
+
+		if (CheckCollisionPointRec(GetMousePosition(), menuButtons[i].rec) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+			menuButtons[i].color = DARKBLUE;
+
+			switch (i)
+			{
+			case 0:
+				game::Update();
+				break;
+			case 1:  //Controls button
+				if (menuCreditsActive) {
+					menuCreditsActive = false;
+					controlsActive = true;
+				}
+				else
+					controlsActive = true;
+				break;
+
+			case 2:  //Credits button
+				if (controlsActive) {
+					controlsActive = false;
+					menuCreditsActive = true;
+				}
+				else
+					menuCreditsActive = true;
+				break;
+
+			case 3:  //Exit button
+				exit(0);
+				break;
+
+			case 4:  //Close button
+				if (controlsActive) {
+					controlsActive = false;
+				}
+				if (menuCreditsActive) {
+					menuCreditsActive = false;
+				}
+				break;
+			}
+		}
+	}
+	
+}
+
+void drawMainMenu() {
 
 	SetTargetFPS(60);
 	setButtons();
 	
+
 	while (!WindowShouldClose())
 	{
 		//BeginDrawing();
-
+		buttonSelection();
 		ClearBackground(BLACK);
 
-		controls();
-		menuCredits();
+		drawControls();
+		drawMenuCredits();
 
 		DrawText("Nark-anoid", menuButtons[0].rec.x, 20, 70, WHITE);
 
@@ -56,57 +110,13 @@ void mainMenu() {
 		DrawText("Exit game", menuButtons[3].rec.x, menuButtons[3].rec.y, menuButtons[3].rec.height, menuButtons[3].color);
 
 		//Color change
-		for (int i = 0; i < cant; i++)
-		{
-			if (!CheckCollisionPointRec(GetMousePosition(), menuButtons[i].rec))
-				menuButtons[i].color = LIGHTGRAY;
-			else
-				menuButtons[i].color = BLUE;
-
-			if (CheckCollisionPointRec(GetMousePosition(), menuButtons[i].rec) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-				menuButtons[i].color = DARKBLUE;
-
-				switch (i)
-				{
-				case 1:  //Controls button
-					if (menuCreditsActive) {
-						menuCreditsActive = false;
-						controlsActive = true;
-					}
-					else
-						controlsActive = true;
-					break;
-
-				case 2:  //Credits button
-					if (controlsActive) {
-						controlsActive = false;
-						menuCreditsActive = true;
-					}
-					else
-						menuCreditsActive = true;
-					break;
-
-				case 3:  //Exit button
-					exit(0);
-					break;
-
-				case 4:  //Close button
-					if (controlsActive) {
-						controlsActive = false;
-					}
-					if (menuCreditsActive) {
-						menuCreditsActive = false;
-					}
-					break;
-				}
-			}
-		}
 		EndDrawing();
 	}
 }
 
-void controls() {
-		
+
+void drawControls() {
+
 	if (controlsActive) {
 		DrawText("Controls", 450, 150, 31, LIGHTGRAY);
 		DrawText("A,D, Left/Right arrow", 420, 200, 19, LIGHTGRAY);
@@ -116,7 +126,8 @@ void controls() {
 	}
 }
 
-void menuCredits() {
+
+void drawMenuCredits() {
 
 	if (menuCreditsActive) {
 		DrawText("Credits", 460, 100, 31, LIGHTGRAY);

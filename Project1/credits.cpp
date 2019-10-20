@@ -1,6 +1,8 @@
 #include "credits.h"
 #include "mainMenu.h"
 #include <iostream>
+
+
 CreditsButton creditsButtons[creditsButtonCant];
 
 void setCreditsButtons() {
@@ -18,7 +20,6 @@ void setCreditsButtons() {
 
 	creditsButtons[2].rec.x = 570;
 	creditsButtons[2].rec.width = 60;
-
 }
 
 void endingCredits() {
@@ -29,13 +30,12 @@ void endingCredits() {
 
 		DrawText("Credits", 265, 50, 60, LIGHTGRAY);
 
-		//Hacer una funcion que sean los creditos y usarla aca y en el menu para no repetir los mismos creditos
-		/*DrawText("Lead Programmer", 50, 150, 30, LIGHTGRAY);
+		DrawText("Lead Programmer", 50, 150, 30, LIGHTGRAY);
 		DrawText("Ignacio Fernandez", 450, 135, 30, LIGHTGRAY);
 		DrawText("Lemos", 452, 165, 30, LIGHTGRAY);
 
 		DrawText("Library", 200, 230, 30, LIGHTGRAY);
-		DrawText("RayLib", 450, 230, 30, LIGHTGRAY);*/
+		DrawText("RayLib", 450, 230, 30, LIGHTGRAY);
 
 		DrawText("Menu", creditsButtons[0].rec.x, creditsButtons[0].rec.y, creditsButtons[0].rec.height, creditsButtons[0].color);
 		DrawText("Play again", creditsButtons[1].rec.x, creditsButtons[1].rec.y, creditsButtons[1].rec.height, creditsButtons[1].color);
@@ -54,7 +54,7 @@ void endingCredits() {
 				switch (i)
 				{
 				case 0:
-					mainMenu();
+					drawMainMenu();
 					break;
 				case 1:  //Play button
 						 //Play game
@@ -64,9 +64,10 @@ void endingCredits() {
 					exit(0);
 					break;
 				}
-				
+
 			}
 			EndDrawing();
 		}
 	}
 }
+

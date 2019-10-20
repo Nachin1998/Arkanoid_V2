@@ -1,5 +1,6 @@
 #include "bricks.h"
-#include "gameManager.h"
+#include "Header.h"
+using namespace game;
 Brick brick[LINES_OF_BRICKS][BRICKS_PER_LINE];
 
 void setBrickParameters() {

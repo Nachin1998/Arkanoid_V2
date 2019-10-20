@@ -13,4 +13,5 @@ extern CreditsButton creditsButtons[creditsButtonCant];
 
 void setCreditsButtons();
 void endingCredits();
+
 #endif
