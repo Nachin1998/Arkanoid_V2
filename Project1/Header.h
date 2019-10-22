@@ -20,7 +20,6 @@ namespace game {
 	void UpdateDrawFrame();  // Update and Draw (one frame)
 	void InitGame();
 	void Update();
-	void setAllParameters();
 	void Draw();
 	void UnloadGame();
 	extern GameScreen actualScene;

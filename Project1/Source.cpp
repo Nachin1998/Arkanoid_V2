@@ -17,11 +17,17 @@
 #include <iostream>
 
 namespace game {
-	static bool gameOver = false;
-	static bool pause = false;
+	bool gameOver = false;
+	bool pause = false;
 	bool enter = false;
 
 	GameScreen actualScene = Menu;
+
+	void setAllParameters() {
+		setPlayerParameters();
+		setBallParameters();
+		//setBrickParameters();
+	}
 
 	void InitGame()
 	{
@@ -32,6 +38,8 @@ namespace game {
 		{
 			play();
 		}
+		UnloadGame();
+		CloseWindow();
 	}
 
 	void play()
@@ -52,9 +60,6 @@ namespace game {
 		default:
 			break;
 		}				
-
-		UnloadGame();
-		CloseWindow();
 	}
 
 	void UpdateDrawFrame()
@@ -98,16 +103,15 @@ namespace game {
 			collisions();
 
 			// Game over logic
-			if (player.life <= 0) gameOver = true;
+			if (player.life <= 4) {
+				gameOver = true;
+				actualScene = Credits;
+			}
 		}
 	}
 
 
-	void setAllParameters() {
-		setPlayerParameters();
-		setBallParameters();
-		//setBrickParameters();
-	}
+	
 
 	// Draw game (one frame)
 	void Draw(void)

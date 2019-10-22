@@ -2,16 +2,18 @@
 #define CREDITS_H
 #include "raylib.h"
 
-const int creditsButtonCant = 3;
+namespace game {
+	const int creditsButtonCant = 3;
 
-struct CreditsButton {
-	Rectangle rec;
-	Color color;
-};
+	struct CreditsButton {
+		Rectangle rec;
+		Color color;
+	};
 
-extern CreditsButton creditsButtons[creditsButtonCant];
+	extern CreditsButton creditsButtons[creditsButtonCant];
 
-void setCreditsButtons();
-void endingCredits();
+	void setCreditsButtons();
+	void endingCredits();
+}
 
 #endif

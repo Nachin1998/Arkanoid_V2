@@ -1,19 +1,21 @@
 #include "bricks.h"
 #include "Header.h"
-using namespace game;
-Brick brick[LINES_OF_BRICKS][BRICKS_PER_LINE];
 
-void setBrickParameters() {
-	brickSize = { screenWidth / BRICKS_PER_LINE, 40 };
+namespace game {
+	Brick brick[LINES_OF_BRICKS][BRICKS_PER_LINE];
 
-	int initialDownPosition = 50;
+	void setBrickParameters() {
+		brickSize = { screenWidth / BRICKS_PER_LINE, 40 };
 
-	for (int i = 0; i < LINES_OF_BRICKS; i++)
-	{
-		for (int j = 0; j < BRICKS_PER_LINE; j++)
+		int initialDownPosition = 50;
+
+		for (int i = 0; i < LINES_OF_BRICKS; i++)
 		{
-			brick[i][j].position = { j*brickSize.x + brickSize.x / 2, i*brickSize.y + initialDownPosition };
-			brick[i][j].active = true;
+			for (int j = 0; j < BRICKS_PER_LINE; j++)
+			{
+				brick[i][j].position = { j*brickSize.x + brickSize.x / 2, i*brickSize.y + initialDownPosition };
+				brick[i][j].active = true;
+			}
 		}
 	}
 }

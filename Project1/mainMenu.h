@@ -2,21 +2,25 @@
 #define MENU_H
 #include "raylib.h"
 
-const int cant = 5;
+namespace game {
+	const int cant = 5;
 
-struct MenuButton {
-	Rectangle rec;
-	Color color;
-};
+	struct MenuButton {
+		Rectangle rec;
+		Color color;
+	};
 
-extern MenuButton menuButtons[cant];
-extern bool controlsActive;
-extern bool creditsActive;
+	extern MenuButton menuButtons[cant];
+	extern bool controlsActive;
+	extern bool creditsActive;
+	extern bool gameOver;
+	extern bool pause;
 
-void setButtons();
-void drawMainMenu();
-void buttonSelection();
-void drawControls();
-void drawMenuCredits();
+	void setButtons();
+	void drawMainMenu();
+	void buttonSelection();
+	void drawControls();
+	void drawMenuCredits();
+}
 
 #endif

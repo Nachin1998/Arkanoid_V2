@@ -1,8 +1,8 @@
 #ifndef COLLISIONS_H
 #define COLLISIONS_H
 
-
-void collisions();
-
+namespace game {
+	void collisions();
+}
 
 #endif
