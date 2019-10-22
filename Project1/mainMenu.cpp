@@ -49,7 +49,7 @@ void buttonSelection() {
 			switch (i)
 			{
 			case 0:
-				game::Update();
+				actualScene = Gameplay;
 				break;
 			case 1:  //Controls button
 				if (menuCreditsActive) {
